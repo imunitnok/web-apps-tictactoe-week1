@@ -1,5 +1,25 @@
+#board table {
+    border-spacing: 0px;
+    border-collapse: collapse;
+}
+
 #board table td {
-    width: 20px;
-    height: 20px;
+    font-family: Helvetica, sans-serif;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 30px;
+    padding: 0px;
+    width: 60px;
+    height: 60px;
     border: 1px solid black;
+}
+
+#board table .player0 {
+    content: "x";
+    background-color: rgb(124, 252, 0);
+}
+
+#board table .player1 {
+    content: "o";
+    background-color: rgb(250, 128, 114);
 }

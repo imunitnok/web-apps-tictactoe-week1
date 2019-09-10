@@ -2,8 +2,7 @@
 
 const DEF_INIT_WIDTH = 5;
 const DEF_INIT_HEIGHT = 5;
-const DEF_PLAYERS_NUM = 2;
-const DEF_GROW_SHIFT = 2;
+const DEF_SIDES_PADDINGS = 3;
 
 const LINE_LENGTH = 5;
 
@@ -14,26 +13,27 @@ export class GameField {
      * @this {GameField}
      * @param {number} width Initial width of game field 
      * @param {number} height Initial height of game field 
-     * @param {number} plNum Number of players
-     * @param {number} grow Paddings of the game field verges from furthest marks
+     * @param {number} padds Paddings of the game field verges from furthest marks
      */
-    constructor(width = DEF_INIT_WIDTH, height = DEF_INIT_HEIGHT,
-                    plNum = DEF_PLAYERS_NUM, grow = DEF_GROW_SHIFT) {
+    constructor(width = DEF_INIT_WIDTH, height = DEF_INIT_HEIGHT, 
+                    padds = DEF_SIDES_PADDINGS, players = ['1', '2']) {
 
         /**@private */ this._width = width;
         /**@private */ this._height = height;
-        /**@private */ this._grow = grow;
+        /**@private */ this._padds = padds;
 
         let tmp = this.constructor._initField(this._height, this._width);
         /**@private */ this._field = tmp.field;
         /**@private */ this._state = tmp.state;
 
         /**@readonly */ this._player = 0;
-        /**@private */ this._plNum = plNum;
+        /**@private */ this._plNum = players.length;
 
+        /**@readonly */ this._players = players;
+ 
         /**@readonly */ this._scores = {};
-        for(let i = 0; i < this._plNum; i++) {
-            this._scores[`player${i}`] = 0;
+        for(let pl = 0; pl < this._players.length; pl++) {
+            this._scores[pl] = 0;
         } 
 
         /**@readonly */ this._moves = [];
@@ -64,28 +64,6 @@ export class GameField {
         return {field, state}
     }
 
-    _shiftMoves(shift) {
-        let moves = this._moves;
-        for(let move of moves) {
-            move.row += shift.up;
-            move.column += shift.left;
-        }
-    }
-
-    _putMoves() {
-        let moves = this._moves;
-        for(let move of moves) {
-            this._field[move.row][move.column] = move.player;
-        }
-        for(let i = 1; i <= this._height; i++) {
-            for(let j = 1; j <= this._width; j++) {
-                if(this._field !== undefined) {
-                    this._calculateState(i, j);
-                }
-            }
-        }
-    }
-
     /**
      * @typedef {Object} Move
      * @property {number} row Row in which player put the mark
@@ -103,8 +81,20 @@ export class GameField {
         return this._scores;
     }
 
+    getPlayerName(i) {
+        return this._players[i];
+    }
+
     getFieldSize() {
         return {height: this._height, width: this._width};
+    }
+
+    _shiftMoves(shift) {
+        let moves = this._moves;
+        for(let move of moves) {
+            move.row += shift.up;
+            move.column += shift.left;
+        }
     }
 
     /**
@@ -113,8 +103,7 @@ export class GameField {
      * than the farthest mark puted by the players.
      */
     _resizeField(row, column) {
-        let grow = this._grow;
-        let field = this._field;
+        let grow = this._padds;
         let shift = {
             up: row - grow <= 0 ? grow - row + 1 : 0,
             left: column - grow <= 0 ? grow - column + 1 : 0
@@ -156,8 +145,8 @@ export class GameField {
         while (field[i][j] != undefined && field[i][j] == player) {
             state[i][j][`dir${rdir}${cdir}`] = field[i-rdir][j-cdir] == player ?
                 state[i-rdir][j-cdir][`dir${rdir}${cdir}`] + 1 : 1;
-            if(state[i][j][`dir${rdir}${cdir}`] > this._scores[`player${player}`]) {
-                this._scores[`player${player}`] = state[i][j][`dir${rdir}${cdir}`];
+            if(state[i][j][`dir${rdir}${cdir}`] > this._scores[player]) {
+                this._scores[player] = state[i][j][`dir${rdir}${cdir}`];
             }
             i += rdir; j += cdir;
         }
@@ -174,6 +163,20 @@ export class GameField {
         this._checkDir(row, column, 1, 0);
         this._checkDir(row, column, 1, -1);
 
+    }
+
+    _putMoves() {
+        let moves = this._moves;
+        for(let move of moves) {
+            this._field[move.row][move.column] = move.player;
+        }
+        for(let i = 1; i <= this._height; i++) {
+            for(let j = 1; j <= this._width; j++) {
+                if(this._field !== undefined) {
+                    this._calculateState(i, j);
+                }
+            }
+        }
     }
 
     /**
@@ -244,14 +247,14 @@ class GameTicTacToe {
             let cell = row.cells[move.column - 1];
 
             switch(move.player) {
-                case 0: cell.append("X"); break;
-                case 1: cell.append("O"); break;
+                case 0: cell.innerHTML = "x"; break;
+                case 1: cell.innerHTML = "o"; break;
             }
         }
 
         for(let player of Object.keys(this.board.scores)) {
             if(this.board.scores[player] >= LINE_LENGTH) {
-                alert(`${player + 1} win!`);
+                alert(`Player ${this.board.getPlayerName(player)} won!`);
                 this._board = new GameField();
                 this.showField();
             }
@@ -269,7 +272,7 @@ let startGame = function() {
 
     board.addEventListener("mousedown", (ev) => {
         console.log(ev.target);
-        let el = ev.target.parentNode;
+        let el = ev.target;
         if(el.localName == "td") {
             let tr = el.parentNode;
             let row = tr.rowIndex;

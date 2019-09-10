@@ -1,0 +1,16 @@
+{
+  "name": "web-apps-tictactoe-week1",
+  "version": "0.0.1",
+  "description": "First week assignment for Web Applications course",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run" : "parcel server index.html --port 5000 --hmr-port 1235"
+  },
+  "author": "Timofei Shugailo",
+  "license": "ISC",
+  "devDependencies": {
+    "fsevents": "^2.0.7",
+    "parcel": "^1.12.3"
+  }
+}

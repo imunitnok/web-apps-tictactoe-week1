@@ -23,3 +23,15 @@
     content: "o";
     background-color: rgb(250, 128, 114);
 }
+
+#board .progress-bar {
+    height: 20px;
+    border: 1px solid black;
+    margin-bottom: 10px;
+}
+
+#board .progress-bar div {
+    width: 0%;
+    height: 100%;
+    background-color: #000;
+}

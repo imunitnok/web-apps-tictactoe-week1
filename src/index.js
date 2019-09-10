@@ -89,6 +89,10 @@ export class GameField {
         return {height: this._height, width: this._width};
     }
 
+    switchPlayer() {
+        this._player = (this._player + 1) % this._plNum;
+    }
+
     _shiftMoves(shift) {
         let moves = this._moves;
         for(let move of moves) {
@@ -197,7 +201,7 @@ export class GameField {
         this._shiftMoves(shift);
         this._putMoves();
 
-        this._player = (player + 1) % this._plNum;
+        this.switchPlayer();
 
         return true;
     }
@@ -211,15 +215,32 @@ class GameTicTacToe {
      * @param {NodeElement} board Container which is show current state of game field 
      * @param {GameField} field Object that describes current game state, default create new game state
      */
-    constructor(uiBoard, board = undefined) {
+    constructor(uiBoard, uiProgress = undefined, board = undefined) {
         
         this._board = board || new GameField();
         this._uiBoard = uiBoard;
-
+        this._uiProgress = uiProgress;
+        this._width = 0;
+        
+        if(uiProgress !== undefined) {
+            this.setTimer();
+        }
     }
 
     get board() {
         return this._board;
+    }
+
+    setTimer() {
+        window.setInterval(() => {
+            if(this._width < 100) {
+                this._width += 1;
+            } else {
+                this._width = 0;
+                this._board.switchPlayer();
+            }
+            this._uiProgress.style.width = this._width + "%";
+        }, 100);
     }
 
     /**
@@ -247,8 +268,8 @@ class GameTicTacToe {
             let cell = row.cells[move.column - 1];
 
             switch(move.player) {
-                case 0: cell.innerHTML = "x"; break;
-                case 1: cell.innerHTML = "o"; break;
+                case 0: cell.innerHTML = "x"; cell.classList.add("player0"); break;
+                case 1: cell.innerHTML = "o"; cell.classList.add("player1"); break;
             }
         }
 
@@ -257,17 +278,22 @@ class GameTicTacToe {
                 alert(`Player ${this.board.getPlayerName(player)} won!`);
                 this._board = new GameField();
                 this.showField();
+                return this;
             }
         }
 
+        this._width = 0;
         return this;
     }
 }
 
 let startGame = function() {
-    let board = document.getElementById("board").getElementsByTagName("table")[0];
+    let board = document.getElementById("board");
+    let table = board.getElementsByTagName("table")[0];
+    let progress = board.getElementsByClassName("progress-bar")[0].firstElementChild;
+    
+    let game = new GameTicTacToe(table, progress);
 
-    let game = new GameTicTacToe(board);
     game.showField();
 
     board.addEventListener("mousedown", (ev) => {

@@ -200,3 +200,91 @@ export class GameField {
     }
 }
 
+class GameTicTacToe {
+    /**
+     * @constructor
+     * @this {GameTicTacToe}
+     * 
+     * @param {NodeElement} board Container which is show current state of game field 
+     * @param {GameField} field Object that describes current game state, default create new game state
+     */
+    constructor(uiBoard, board = undefined) {
+        
+        this._board = board || new GameField();
+        this._uiBoard = uiBoard;
+
+    }
+
+    get board() {
+        return this._board;
+    }
+
+    /**
+     * Set innerHTML of board element to empty string. After that
+     * puts (shows as table) current game state.
+     * 
+     * @returns {GameTicTacToe} Current game object
+     */
+    showField() {
+        this._uiBoard.innerHTML = "";
+        let size = this.board.getFieldSize();
+        for(let i = 0; i < size.height; i++) {
+            let tr = document.createElement("tr");
+            for(let j = 0; j < size.width; j++) {
+                let td = document.createElement("td");
+                tr.append(td);
+            }
+            this._uiBoard.append(tr);
+        }
+
+        let shift = {up: 0, left: 0}
+        for (let move of this.board.moves) {
+
+            let row = this._uiBoard.rows[move.row - 1];
+            let cell = row.cells[move.column - 1];
+
+            switch(move.player) {
+                case 0: cell.append("X"); break;
+                case 1: cell.append("O"); break;
+            }
+        }
+
+        for(let player of Object.keys(this.board.scores)) {
+            if(this.board.scores[player] >= LINE_LENGTH) {
+                alert(`${player + 1} win!`);
+                this._board = new GameField();
+                this.showField();
+            }
+        }
+
+        return this;
+    }
+}
+
+let startGame = function() {
+    let board = document.getElementById("board").getElementsByTagName("table")[0];
+
+    let game = new GameTicTacToe(board);
+    game.showField();
+
+    board.addEventListener("mousedown", (ev) => {
+        console.log(ev.target);
+        let el = ev.target.parentNode;
+        if(el.localName == "td") {
+            let tr = el.parentNode;
+            let row = tr.rowIndex;
+            let column = el.cellIndex;
+            game.board.turn(row + 1, column + 1);
+            game.showField();
+        }
+        ev.stopPropagation();
+    });
+
+    document.removeEventListener("DOMContentLoaded", startGame);
+}
+
+if(document.readyState !== "lading") {
+    startGame();
+} else {
+    document.addEventListener("DOMContentLoaded", startGame);
+}

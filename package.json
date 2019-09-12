@@ -1,16 +1,40 @@
 {
-  "name": "web-apps-tictactoe-week1",
+  "name": "web-apps-tictactoe-weeks",
   "version": "0.0.1",
-  "description": "First week assignment for Web Applications course",
+  "description": "Weekly assignments for Web Applications course",
   "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "run" : "parcel server index.html --port 5000 --hmr-port 1235"
+    "build": "babel src -d lib",
+    "test": "mocha ./lib/test",
+    "run": "parcel server index.html --port 5000 --hmr-port 1235",
+    "browser": "browserify src -o browser.js"
   },
   "author": "Timofei Shugailo",
   "license": "ISC",
   "devDependencies": {
+    "@babel/cli": "^7.6.0",
+    "@babel/core": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
+    "babelify": "^10.0.0",
+    "chai": "^4.2.0",
     "fsevents": "^2.0.7",
-    "parcel": "^1.12.3"
+    "mocha": "^6.2.0",
+    "parcel-bundler": "^1.12.3"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.6.0",
+    "browserify": "^16.5.0"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "@babel/preset-env"
+          ]
+        }
+      ]
+    ]
   }
 }

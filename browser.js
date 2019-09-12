@@ -14,7 +14,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 var DEF_INIT_WIDTH = 5;
 var DEF_INIT_HEIGHT = 5;
-var DEF_SIDES_PADDINGS = 3;
+var DEF_SIDES_PADDINGS = 0;
 
 var GameField =
 /*#__PURE__*/

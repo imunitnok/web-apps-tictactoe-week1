@@ -5,7 +5,7 @@ import {GameTicTacToe} from "./gameui";
 let startGame = function() {
     let board = document.getElementById("board");
     let table = board.getElementsByTagName("table")[0];
-    let progress = board.getElementsByClassName("progress-bar")[0].firstElementChild;
+    let progress = document.getElementById("progress-bar").firstElementChild;
     
     let game = new GameTicTacToe(table, document.createElement.bind(document), progress);
 

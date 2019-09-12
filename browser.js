@@ -485,7 +485,7 @@ var _gameui = require("./gameui");
 var startGame = function startGame() {
   var board = document.getElementById("board");
   var table = board.getElementsByTagName("table")[0];
-  var progress = board.getElementsByClassName("progress-bar")[0].firstElementChild;
+  var progress = document.getElementById("progress-bar").firstElementChild;
   var game = new _gameui.GameTicTacToe(table, document.createElement.bind(document), progress);
   document.createElement;
   game.showField();

@@ -107,8 +107,8 @@ export class GameField {
     _resizeField(row, column) {
         let grow = this._padds;
         let shift = {
-            up: row - grow <= 0 ? grow - row + 1 : 0,
-            left: column - grow <= 0 ? grow - column + 1 : 0
+            up: row - grow < 0 ? grow - row + 1 : 0,
+            left: column - grow < 0 ? grow - column + 1 : 0
         };
 
         let height = row + grow > this._height ? row + grow : this._height;

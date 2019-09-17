@@ -9,8 +9,6 @@ let startGame = function() {
     
     let game = new GameTicTacToe(table, document.createElement.bind(document), progress);
 
-    document.createElement
-
     game.showField();
 
     board.addEventListener("mousedown", (ev) => {

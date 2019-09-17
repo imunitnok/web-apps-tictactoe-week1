@@ -52,6 +52,17 @@ export class GameTicTacToe {
             let tr = this._showFunc("tr");
             for(let j = 0; j < size.width; j++) {
                 let td = this._showFunc("td");
+                td.addEventListener("mousedown", (ev) => {
+                    let el = ev.target;
+                    if(el.localName == "td") {
+                        let tr = el.parentNode;
+                        let row = tr.rowIndex;
+                        let column = el.cellIndex;
+                        if(this.board.turn(row + 1, column + 1))
+                            this.showField();
+                    }
+                    ev.stopPropagation();
+                });
                 tr.append(td);
             }
             this._uiBoard.append(tr);

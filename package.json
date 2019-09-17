@@ -6,7 +6,7 @@
   "scripts": {
     "build": "babel src -d lib",
     "test": "mocha ./lib/test",
-    "run": "parcel server index.html --port 5000 --hmr-port 1235",
+    "start": "parcel server index.html --port 5000 --hmr-port 1235",
     "browser": "browserify src -o browser.js"
   },
   "author": "Timofei Shugailo",

@@ -395,8 +395,6 @@ function () {
   }, {
     key: "showField",
     value: function showField(createUIElement) {
-      var _this2 = this;
-
       this._uiBoard.innerHTML = "";
       var size = this.board.getFieldSize();
 
@@ -404,20 +402,19 @@ function () {
         var tr = this._showFunc("tr");
 
         for (var j = 0; j < size.width; j++) {
-          var td = this._showFunc("td");
+          var td = this._showFunc("td"); // td.addEventListener("mousedown", (ev) => {
+          //     let el = ev.target;
+          //     if(el.localName == "td") {
+          //         let tr = el.parentNode;
+          //         let row = tr.rowIndex;
+          //         let column = el.cellIndex;
+          //         if(this.board.turn(row + 1, column + 1))
+          //             this.showField();
+          //     }
+          //     ev.stopPropagation();
+          // });
 
-          td.addEventListener("mousedown", function (ev) {
-            var el = ev.target;
 
-            if (el.localName == "td") {
-              var _tr = el.parentNode;
-              var row = _tr.rowIndex;
-              var column = el.cellIndex;
-              if (_this2.board.turn(row + 1, column + 1)) _this2.showField();
-            }
-
-            ev.stopPropagation();
-          });
           tr.append(td);
         }
 
@@ -501,18 +498,19 @@ var startGame = function startGame() {
   var table = board.getElementsByTagName("table")[0];
   var progress = document.getElementById("progress-bar").firstElementChild;
   var game = new _gameui.GameTicTacToe(table, document.createElement.bind(document), progress);
-  game.showField(); // board.addEventListener("mousedown", (ev) => {
-  //     let el = ev.target;
-  //     if(el.localName == "td") {
-  //         let tr = el.parentNode;
-  //         let row = tr.rowIndex;
-  //         let column = el.cellIndex;
-  //         if(game.board.turn(row + 1, column + 1))
-  //             game.showField();
-  //     }
-  //     ev.stopPropagation();
-  // });
+  game.showField();
+  board.addEventListener("mousedown", function (ev) {
+    var el = ev.target;
 
+    if (el.localName == "td") {
+      var tr = el.parentNode;
+      var row = tr.rowIndex;
+      var column = el.cellIndex;
+      if (game.board.turn(row + 1, column + 1)) game.showField();
+    }
+
+    ev.stopPropagation();
+  });
   document.removeEventListener("DOMContentLoaded", startGame);
 };
 
